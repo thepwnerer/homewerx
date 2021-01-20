@@ -5,9 +5,10 @@ class KnightPathFinder
     def initialize(pos)
         @start_pos = pos
         @considered_positions = [pos]
+        @considered_nodes = [PolyTreeNode.new(pos)]
     end
 
-    attr_accessor :considered_positions, :start_pos
+    attr_accessor :considered_positions, :start_pos, :considered_nodes
 
     def build_move_tree
         #self.root_note? Why is this required if it is required?
@@ -39,9 +40,13 @@ class KnightPathFinder
     def new_move_positions(pos)
         valid_moves = valid_moves(pos)
         new_moves = Array.new
+        parent_node = PolyTreeNode.new(pos)
         valid_moves.each do |move|
-            if !self.considered_positions.include?(move);
+            if !self.considered_positions.include?(move)
                 self.considered_positions << move
+                new_node = PolyTreeNode.new(move)
+                new_node.parent = parent_node
+                self.considered_nodes << new_node
                 new_moves << move
             end
         end
@@ -54,4 +59,4 @@ test = KnightPathFinder.new([0,0])
 
 test.build_move_tree
 
-p test.considered_positions
+p test.considered_nodes.length
