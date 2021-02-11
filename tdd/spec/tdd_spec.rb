@@ -58,4 +58,5 @@ describe Hanoi do
             expect(game.won).to eq(true)
         end
     end
+
 end

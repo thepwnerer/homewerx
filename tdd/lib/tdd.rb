@@ -1,3 +1,5 @@
+require 'pry'
+
 def remove_dups(arr)
     unique_hash = Hash.new(0)
     unique_arr = Array.new
@@ -65,35 +67,63 @@ class Hanoi
     def initialize()
         @board = Array.new(3) { Array.new }
         self.board[0] = [1,2,3]
-        p @won_position = [self.board[2],self.board[1],self.board[0]]
+        @won_position = [self.board[2].clone,self.board[1].clone,self.board[0].clone]
     end
 
     def move(a,b)
-        move = self.board[a].shift
-        if self.board[b][0] != nil && self.board[a][0] != nil
-            if self.board[a][0] > self.board[b][0]
-                p 'You cannot place a larger disk on top of a smaller one!'
-                raise ArgumentError 
-            elsif self.board[a] == nil
-                p "please choose a peg that has disks!"
-                raise ArgumentError
+        move = self.board[a][0]
+        if !self.board[a][0]
+            p "please choose a peg that has disks!"
+            raise ArgumentError
+        else
+            if self.board[b][0] != nil
+                if self.board[a][0] > self.board[b][0]
+                    p 'You cannot place a larger disk on top of a smaller one!'
+                    raise ArgumentError 
+                else
+                    self.board[a].shift
+                    self.board[b].unshift(move)
+                end
             else
+                self.board[a].shift
                 self.board[b].unshift(move)
             end
-        else
-            self.board[b].unshift(move)
         end
     end
 
-    def won()
+    def won
+        p self.board
         if self.board == self.won_position
+            p "Mother fucker, you won!"
             return true
+        end
+    end
+
+    def get_input()
+        p "Please enter the input in the following way: from-disc,to-spot, ex. 0,1"
+        input = gets.chomp
+    end
+
+    def play()
+        until self.won == true
+            begin
+                p self.board
+                user_move = get_input()
+                from = user_move[0].to_i
+                to = user_move[2].to_i
+                self.move(from,to)
+            rescue ArgumentError
+                retry
+            end
         end
     end
 
 end
 
 game = Hanoi.new
+game.play
+
+=begin
 game.move(0,2)
 game.move(0,1)
 game.move(2,1)
@@ -102,4 +132,8 @@ game.move(1,0)
 game.move(1,2)
 game.move(0,2)
 
-p game.board
+game.board
+
+p game.won
+=end
+
